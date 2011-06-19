@@ -18,21 +18,23 @@ import org.koiroha.usb.impl.USBLibrary;
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// LibUSB0: libusb 0.1 JNI インターフェース
+// LibUSB0: libusb 0.1 JNI Interface
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 /**
- * Java から libusb 0.1 を利用するための JNI インターフェースです。libusb 0.1 で用意されて
- * いる関数をほぼそのまま利用することが出来ます。メソッドに関する詳細は libusb の同名の関数を
- * 参照してください。
+ * JNI interface to use libusb 0.1 functions from Java. It is available to
+ * use libusb 0.1 functions almost as same. Please refer libusb reference to
+ * know description.
  * <p>
- * 名前空間である {@code usb_} は省略しています。
- * バイト配列はそれ自体が長さも保持してるため length パラメータは省略しています。
- * ポインタは long で示されます。
- * ポインタに加算して開始位置を示せないためオフセットを追加しています。
+ * <ul>
+ * <li>Omit {@code usb_} prefix from method names in this library.</li>
+ * <li>Omit length parameters because byte-array has its property itself.</li>
+ * <li>Pointers are specified as long.</li>
+ * <li>Add offset parameter because byte-array cannot increment like pointer.</li>
+ * </ul>
  * <p>
- * libusb 0.1 はグローバル変数でデバイス情報を保持しているためマルチスレッドでの呼び出しに対応
- * していません。処理が競合するとアクセス違反で Java VM が異常終了する可能性がありますので
- * 十分に注意してください。
+ * The native libusb 0.1 is not support multi-thread call because it uses
+ * global variable to keep device information. Note that if processes
+ * conflict in each threads, the Java VM maybe abort by access violation.
  * <p>
  * @version usb4j 1.0 $Revision: 1.7 $ $Date: 2009/05/14 17:03:56 $
  * @author torao
@@ -41,43 +43,41 @@ import org.koiroha.usb.impl.USBLibrary;
 public final class LibUSB0 extends USBLibrary{
 
 	// ======================================================================
-	// ログ出力先
+	// Log Output
 	// ======================================================================
 	/**
-	 * このクラスのログ出力先です。
-	 * <p>
+	 * Log output of this class.
 	 */
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LibUSB0.class.getName());
 
 	// ======================================================================
-	// ライブラリ名
+	// Library Name
 	// ======================================================================
 	/**
-	 * libusb 0.1 to Java API のネイティブライブラリ名 {@value} を表します。
-	 * <p>
+	 * The native library name {@value} to access libusb 0.1 from Java.
 	 */
 	public static final String LIBRARY_NAME = "lu04j";
 
 	// ======================================================================
-	// スタティックイニシャライザ
+	// Static Initializer
 	// ======================================================================
 	/**
-	 * JNI 用の共有ライブラリをロードします。
+	 * Load shared library.
 	 * <p>
 	 */
 	static{
-		new LibUSB0();		// ライブラリのロード
+		new LibUSB0();		// Load library
 
-		// 初期化メソッドを呼び出す
+		// call initialize method
 		init();
 		trace("init()");
 	}
 
 	// ======================================================================
-	// コンストラクタ
+	// Constructor
 	// ======================================================================
 	/**
-	 * コンストラクタはクラス内に隠蔽されています。
+	 * Constructor is hidden in class internal.
 	 * <p>
 	 */
 	private LibUSB0() {
@@ -86,27 +86,27 @@ public final class LibUSB0 extends USBLibrary{
 	}
 
 	// ======================================================================
-	// ネイティブライブラリバージョン
+	// Native Library Version
 	// ======================================================================
 	/**
-	 * ネイティブライブラリのインターフェースバージョンを参照します。返値は上位 32bit に JNI
-	 * のバージョン、下位 32bit 中上位 8 ビットにメジャーバージョン、下位 8 ビットにマイナー
-	 * バージョンとなる 64bit 整数です。たとえば JNI 1.6 ライブラリバージョン 1.0 は
-	 * 0x0001000600000100 となります。
-	 * <p>
-	 * @return インターフェースバージョン
+	 * Refer the version of interface of native library. The returned 64bit
+	 * value means that the  upper 32bit is JNI version, and upper 8bit in
+	 * lower 32bit is major version, lower 8bit is minor version. For example,
+	 * 0x0001000600000100 returned in library version 1.0 running on JNI 1.6.
+	 *
+	 * @return interface version
 	 */
 	@Override
 	protected native long nativeInterfaceVersion();
 
 	// ======================================================================
-	// エラーの確認
+	// Check Error
 	// ======================================================================
 	/**
-	 * 指定されたリターンコードを判定して負の値であれば例外を発生させます。
+	 * Arise exception if specified return code was negative.
 	 * <p>
-	 * @param ret リターンコード
-	 * @throws USBException エラーが発生している場合
+	 * @param ret return code
+	 * @throws USBException in case error occured
 	 */
 	static void checkError(int ret) throws USBException{
 		if(ret < 0){
@@ -116,13 +116,13 @@ public final class LibUSB0 extends USBLibrary{
 	}
 
 	// ======================================================================
-	// トレースログの出力
+	// Output Trace Log
 	// ======================================================================
 	/**
-	 * トレースログを出力します。
+	 * Output trace logs.
 	 * <p>
-	 * @param fmt フォーマット
-	 * @param args 引数
+	 * @param fmt output format
+	 * @param args arguments
 	 */
 	static void trace(String fmt, Object... args){
 		if(logger.isLoggable(Level.FINEST)){
@@ -132,131 +132,145 @@ public final class LibUSB0 extends USBLibrary{
 	}
 
 	// ======================================================================
-	// libusb の初期化
+	// Initialize libusb
 	// ======================================================================
 	/**
-	 * libusb を初期化します。このメソッドはクラスがロードされた時点で暗黙的に呼び出されるため
-	 * アプリケーションから明示的に呼び出す必要はありません。
-	 * <p>
+	 * Initialize libusb. This method will be called implicity when class
+	 * load, so there is no need to call this from application.
 	*/
 	public static native void init();
 
 	// ======================================================================
-	// デバッグレベルの設定
+	// Set Debug Level
 	// ======================================================================
 	/**
-	 * libusb のデバッグレベルを設定します。libusb のログは標準エラー ({@code stderr})
-	 * に出力されます。有効な設定値は 0 から 4 程度で (未定義)、大きな値ほど詳細なメッセージを
-	 * 出力します。
+	 * Set debug level of libusb. The libusb will output debug log to
+	 * standard error ({@code stderr}). Available value is from 0 to about 4
+	 * (it's not specified), greater value will output more describe message.
 	 * <p>
-	 * 環境変数 {@code USB_DEBUG} にレベル値を指定する事で {@link #init()} 実行時から
-	 * ログ出力が有効になります。
+	 * You can set environment variable {@code USB_DEBUG} to be able to
+	 * output debug logging in {@link #init()}.
 	 * <p>
-	 * @param level デバッグレベル
+	 * @param level debug level
 	*/
 	public static native void set_debug(int level);
 
 	// ======================================================================
-	// USB バスの検索
+	// Find USB Busses
 	// ======================================================================
 	/**
-	 * システムに接続されている USB バスを検索します。このメソッドは {@link #get_busses()}
-	 * で返されるデバイス情報の構成に影響を与えます。
+	 * Find USB busses connected in system. This method affects the device
+	 * informations that will be returned by {@link #get_busses()}.
 	 * <p>
-	 * @return 前回の検索結果から検出した USB バス数の差分
+	 * @return difference of usb busses number from previous search result
 	*/
 	public static native int find_busses();
 
 	// ======================================================================
-	// USB デバイスの検索
+	// Find USB Devices
 	// ======================================================================
 	/**
-	 * 接続中の USB デバイスを検索します。このメソッドは {@link #get_busses()} で返される
-	 * デバイス情報の構成に影響を与えます。このメソッドは {@link #find_busses()} の後に
-	 * 呼び出す必要があります。
+	 * Find USB devices connected in system. This method affects the device
+	 * informations that will be returned by {@link #get_busses()}. This
+	 * method must call after {@link #find_busses()}.
 	 * <p>
-	 * @return 前回の検索結果から検出した USB デバイス数の差分
+	 * @return difference of usb devices number from previous search result
 	*/
 	public static native int find_devices();
 
 	// ======================================================================
-	// USB バスの取得
+	// Retrieve USB Bus
 	// ======================================================================
 	/**
-	 * 前回の {@link #find_busses()}, {@link #find_devices()} 呼び出し時に検出した
-	 * USB のバス情報を取得します。返値のバス情報からの参照をたどって全てのデバイスを取得する
-	 * ことが出来ます。
+	 * Retrieve USB bus information that was detected recent
+	 * {@link #find_busses()}, {@link #find_devices()} call.
+	 * It is able to retrieve all devices from returned bus information.
 	 * <p>
-	 * @return USB バス
+	 * @return USB bus
 	*/
 	public static native Bus get_busses();
 
 	// ======================================================================
-	// エラーメッセージの取得
+	// Retrieve Error Message
 	// ======================================================================
 	/**
-	 * 直前に発生したエラーのメッセージを取得します。
+	 * Return message of recent error.
 	 * <p>
-	 * @return エラーメッセージ
+	 * @return error message
 	*/
 	public static native String strerror();
 
 	// ======================================================================
-	// デバイスのオープン
+	// Open Device
 	// ======================================================================
 	/**
-	 * 指定されたデバイスをオープンします。オープンに失敗した場合は 0 を返します。
+	 * Open specified device. Return 0 if it failed.
 	 * <p>
-	 * @param dev デバイス
-	 * @return デバイスハンドル
+	 * @param dev device
+	 * @return device handle
 	*/
 	public static native long open(Device dev);
 
 	// ======================================================================
-	// デバイスのクローズ
+	// Close Device
 	// ======================================================================
 	/**
-	 * 指定されたデバイスハンドルをクローズします。
+	 * Close specified device handle.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @return 成功した場合 0
+	 * @param handle device handle
+	 * @return 0 for success
 	*/
 	public static native int close(long handle);
 
 	// ======================================================================
-	// 文字列の参照
+	// Refer String
 	// ======================================================================
 	/**
+	 * Refer string descriptor from specified device handle. If this method
+	 * success, the binary of string descriptor will stored in {@code buf}.
+	 * So, there is {@code bLength} that means length in first byte of
+	 * {@code buf}, and 0x03 that means {@code bDescriptorType} is in second
+	 * byte, after third bytes are Unicode string.
+	 * <!--
 	 * 指定されたデバイスハンドルを使用して文字列記述子を参照します。このメソッドが成功した場合、
 	 * {@code buf} には文字列記述子のバイナリが格納されます。つまり最初の 1 バイト目に
 	 * {@code bLength} が示す長さ、2 バイト目に {@code bDescriptorType} が文字列記述
 	 * 子を表す 0x03、3 バイト目以降に Unicode で表された文字列が格納されます。
+	 * -->
 	 * <p>
+	 * But in case 0 specified as {@code index}, 16bit value {@code wLANGID}
+	 * that specify {@code langid} that should use as default will stored
+	 * ({@code bLength} will be 4). {@code wLANGID} is
+	 * {@code java.nio.ByteOrder#LITTLE_ENDIAN little endian} byte order.
+	 * <!--
 	 * ただし、{@code index} に 0 を指定した場合はデフォルトとして使用すべき
 	 * {@code languid} を示す 16bit 値 {@code wLANGID} が格納されます (この場合
 	 * {@code bLength} は 4 となります)。{@code wLANGID} は
 	 * {@code java.nio.ByteOrder#LITTLE_ENDIAN リトルエンディアン}のバイト順序です。
+	 * -->
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param index 文字列記述子のインデックス
-	 * @param langid 言語ID
-	 * @param buf 格納先のバッファ (255以上)
-	 * @return バッファに取得した文字列の長さ。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param index the index of string descriptor
+	 * @param langid language id
+	 * @param buf the buffer of storage (more 255 byte)
+	 * @return byte length of stored string. negative value if failed
 	*/
 	public static native int get_string(long handle, int index, int langid, byte[] buf);
 
 	// ======================================================================
-	// 文字列の参照
+	// Refer String
 	// ======================================================================
 	/**
+	 * The utility method to retrieve string descriptor of environment
+	 * default language as ISO-8859-1.
 	 * デフォルト言語 ID の文字列記述子を ISO-8859-1 で取得するための簡易版 {@link
 	 * #get_string(long, int, int, byte[])} です。C 言語では 1 文字 16bit の
 	 * Unicode 文字が扱い辛いために用意されています。
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param index 文字列記述子のインデックス
-	 * @param buf 格納先のバッファ (255以上)
-	 * @return バッファに取得した文字列の長さ。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param index the index of string descriptor
+	 * @param buf the buffer of storage (more 255 byte)
+	 * @return byte length of stored string. negative value if failed
 	*/
 	public static native int get_string_simple(long handle, int index, byte[] buf);
 
@@ -387,75 +401,75 @@ public final class LibUSB0 extends USBLibrary{
 	public static native int set_configuration(long handle, int configuration);
 
 	// ======================================================================
-	// インターフェースの要求
+	// Claim Interface
 	// ======================================================================
 	/**
-	 * インターフェースを要求します。
+	 * Claim specified interface.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param intf インターフェース
-	 * @return 成功した場合は 0。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param intf interface
+	 * @return 0 successfully, negative if failed.
 	*/
 	public static native int claim_interface(long handle, int intf);
 
 	// ======================================================================
-	// インターフェースの解放
+	// Release Interface
 	// ======================================================================
 	/**
-	 * インターフェースを解放します。
+	 * Release specified interface.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param intf インターフェース
-	 * @return 成功した場合は 0。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param intf interface to release
+	 * @return 0 successfully, negative if failed
 	*/
 	public static native int release_interface(long handle, int intf);
 
 	// ======================================================================
-	// 代替設定の設定
+	// Set AltSettings
 	// ======================================================================
 	/**
-	 * 代替設定を設定します。
+	 * Set alternate settings.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param alternate 代替設定
-	 * @return 成功した場合は 0。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param alternate alternate settings
+	 * @return 0 successfully, negative if failed
 	*/
 	public static native int set_altinterface(long handle, int alternate);
 
 	// ======================================================================
-	// エンドポイントのリセット
+	// Reset Endpoint
 	// ======================================================================
 	/**
-	 * エンドポイントをリセットします。
+	 * Reset specified endpoint.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param ep エンドポイント
-	 * @return 成功した場合は 0。失敗した場合は負の値。
-	 * @deprecated {@link #clear_halt(long, int)} を使用してください。
+	 * @param handle device handle
+	 * @param ep endpoint
+	 * @return 0 successful, negative if failed.
+	 * @deprecated Please use {@link #clear_halt(long, int)}.
 	*/
 	@Deprecated
 	public static native int resetep(long handle, int ep);
 
 	// ======================================================================
-	// HALT のクリア
+	// Clear HALT
 	// ======================================================================
 	/**
-	 * 指定されたエンドポイントに対する HALT 状態をクリアします。
+	 * Clear HALT status for specified endpoint.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @param ep エンドポイント
-	 * @return 成功した場合は 0。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @param ep endpoint
+	 * @return 0 normally, negative if failed
 	*/
 	public static native int clear_halt(long handle, int ep);
 
 	// ======================================================================
-	// デバイスのリセット
+	// Reset Device
 	// ======================================================================
 	/**
-	 * デバイスをリセットします。
+	 * Reset specified device.
 	 * <p>
-	 * @param handle デバイスハンドル
-	 * @return 成功した場合は 0。失敗した場合は負の値。
+	 * @param handle device handle
+	 * @return 0 if success, negative if failed
 	*/
 	public static native int reset(long handle);
 
@@ -541,7 +555,7 @@ public final class LibUSB0 extends USBLibrary{
 	 * <p>
 	 */
 	public static class Interface{
-		/** このインターフェースの代替設定です。 */
+		/** alternate settings of this interface. */
 		public AltSetting[] altsetting = null;
 	}
 
@@ -554,11 +568,11 @@ public final class LibUSB0 extends USBLibrary{
 	 * <p>
 	 */
 	public static class AltSetting{
-		/** インターフェース記述子です。 */
+		/** Interface descriptor. */
 		public InterfaceDescriptor descriptor = null;
-		/** エンドポイントです。 */
+		/** endpoints. */
 		public Endpoint[] endpoint = null;
-		/** 追加の記述子です。 */
+		/** extra descriptors. */
 		public byte[] extra = null;
 	}
 
@@ -571,9 +585,9 @@ public final class LibUSB0 extends USBLibrary{
 	 * <p>
 	 */
 	public static class Endpoint{
-		/** エンドポイント記述子です。 */
+		/** Endpoint descriptor. */
 		public EndpointDescriptor descriptor = null;
-		/** 追加の記述子です。 */
+		/** Extra descriptors. */
 		public byte[] extra = null;
 	}
 
