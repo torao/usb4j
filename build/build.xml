@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="" basedir="..">
+	<condition property="osid" value="macosx">
+		<and><os family="mac" /><os family="unix" /></and>
+	</condition>
+	<condition property="osid" value="windows">
+		<os family="windows" />
+	</condition>
+	<condition property="osid" value="linux">
+		<and><os name="Linux" /><os family="unix" /></and>
+	</condition>
+	<condition property="osid" value="solaris">
+		<os name="SunOS"/>
+	</condition>
+
+	<property name="dir.temp"        value="build/tmp" description="作業ディレクトリ" />
+	<property name="dir.jni"         value="build/jni" description="JNIディレクトリ" />
+	<property name="dir.dest"        value="dest"      description="配布ディレクトリ" />
+	<property name="archive.id"      value="usb4j"     description="配布ファイルID" />
+	<property name="archive.version" value="1.0"        description="配布バージョン" />
+	<property name="archive.name"    value="${archive.id}_${archive.version}" />
+	<property name="javadoc.title"   value="USB for Java" description="javadocタイトル" />
+	<property name="jdk.target"      value="1.5"        description="コンパイルバージョン" />
+	<property name="jdk.doclocation" value="http://java.sun.com/j2se/1.5.0/ja/docs/ja/api/" />
+	<!-- <property name="jdk.doclocation" value="http://java.sun.com/javase/ja/6/docs/ja/api/" /> -->
+
+	<target name="init">
+		<mkdir dir="${dir.jni}" />
+		<mkdir dir="${dir.jni}/dest" />
+		<mkdir dir="${dir.jni}/src" />
+		<mkdir dir="${dir.dest}" />
+		<mkdir dir="${dir.dest}/lib" />
+		<mkdir dir="${dir.dest}/lib/${osid}" />
+	</target>
+
+	<target name="make.jni.interface" depends="init" description="USBライブラリ用JNIヘッダ作成">
+		<javah destdir="build/jni/src" classpath="build/classes" force="true">
+			<class name="org.koiroha.usb.impl.libusb.LibUSB0" />
+			<class name="org.koiroha.usb.impl.openusb.OpenUSB" />
+		</javah>
+		<echo message="Update libusb 0.1 and OpenUSB 1.0 JNI header" />
+	</target>
+
+	<target name="make.jni.library" depends="init" description="USBライブラリ用JNIライブラリ作成">
+		<echo message="running ${osid}.mk" />
+		<exec executable="make" dir="${dir.jni}">
+			<arg value="-f"/>
+			<arg value="${osid}.mk"/>
+		</exec>
+		<echo message="Update JNI Library" />
+	</target>
+
+	<target name="update.usb-ids" depends="init" description="usb.idsファイルの更新">
+		<get src="http://www.linux-usb.org/usb.ids" dest="build/src.tools/org/koiroha/usb/tools/usb.ids" />
+	</target>
+
+	<target name="make.javadoc" depends="init" description="APIリファレンスの作成">
+		<mkdir dir="${dir.dest}/doc/api/" />
+		<mkdir dir="build/doc/" />
+		<copy todir="${dir.dest}/doc/">
+			<fileset dir="build/doc/" />
+		</copy>
+		<javadoc destdir="${dir.dest}/doc/api/" docencoding="UTF-8" extdirs="build/lib" access="protected" author="yes" charset="UTF-8" doctitle="${javadoc.title}" encoding="UTF-8" use="true" windowtitle="${javadoc.title}">
+			<fileset dir="build/src">
+				<include name="**/*.java" />
+				<!-- <exclude name="org/koiroha/usb/impl/*.java" /> -->
+			</fileset>
+			<link href="${jdk.doclocation}" />
+			<header>${javadoc.title}</header>
+			<footer>koiroha.org by takami torao</footer>
+			<package name="org.koiroha.usb.*"/>
+			<package name="org.koiroha.usb.impl.libusb.*"/>
+			<excludepackage name="org.koiroha.usb.impl.*Impl" />
+		</javadoc>
+		<copy todir="${dir.dest}/doc/api/">
+			<fileset dir="build/src" includes="**/doc-files/*"/>
+		</copy>
+		<zip destfile="${dir.dest}/${archive.name}_doc.zip">
+			<fileset dir="${dir.dest}/doc/" />
+		</zip>
+	</target>
+
+	<target name="make.library" depends="init" description="JARファイルの作成">
+		<mkdir dir="${dir.temp}" description="作業ディレクトリの作成"/>
+		<javac srcdir="build/src;build/src.tools" destdir="${dir.temp}" encoding="UTF-8" target="${jdk.target}" extdirs="build/lib">
+		</javac>
+		<copy todir="${dir.temp}">
+			<fileset dir="build/src">
+				<exclude name="**/*.java" />
+			</fileset>
+			<fileset dir="build/src.tools">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<jar jarfile="${dir.dest}/${archive.name}.jar">
+			<fileset dir="${dir.temp}" />
+			<manifest>
+				<attribute name="Created-By" value="takami torao" />
+				<attribute name="Implementation-Title" value="${archive.name}" />
+			</manifest>
+		</jar>
+		<delete dir="${dir.temp}" />
+	</target>
+
+	<target name="www.koiroha.org" depends="make.javadoc" description="www.koiroha.orgへ配布">
+		<copy todir="../www.koiroha.org/WebContent/usb4j/api/">
+			<fileset dir="${dir.dest}/doc/api/" />
+		</copy>
+	</target>
+
+</project>

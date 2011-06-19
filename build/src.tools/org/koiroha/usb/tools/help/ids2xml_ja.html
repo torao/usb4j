@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>IDS to ClassID XML 変換ユーティリティ</title>
+</head>
+<body>
+<h1 style="font-family:sans-serif;">ClassID XML 変換ユーティリティ</h1>
+<h2 style="font-family:sans-serif;margin-left:3px;">目 的</h2>
+<p style="margin:0px 4px 0px 14px;">
+このユーティリティは USB ID's ファイルを usb4j の <code>ClassID</code> クラスで読み込み可能な形式の XML に
+変換します。ClassID XML はクラス、サブクラス、ベンダー、製品などの ID を人が認識するためのラベルとマップするための
+簡単なデータベースファイルです。USB ID's ファイルは
+<a href="http://www.linux-usb.org/">http://www.linux-usb.org</a> などで入手することが出来ます。
+</p>
+<h2 style="font-family:sans-serif;margin-left:3px;">利用方法</h2>
+<p style="margin:0px 4px 0px 14px;">
+IDS ファイルの URL またはローカルファイルを選択して変換ボタンを押してください。変換内容を確認したら保存ボタンでファイルに
+保存することが出来ます。ClassID XML ファイルはリソースとして JAR ファイルにバンドルしアプリケーションで使用する事が
+できます。
+</p>
+<pre style="margin:8px 4px 0px 14px;font-size:10px;">String resourceName = "com/foo/usbclassid.xml";
+URL url = classLoader.getResource(resourceName);
+ClassID classId = ClassID.getClassID(url);
+String vendorName = classId.getVencor(0x8086);</pre>
+</body>
+</html>

@@ -1,0 +1,25 @@
+●libusb 0.1 デバイス取り外しによるアクセス違反
+インターフェースを claim したままデバイスを取り外し、デバイスをクローズしようとするとまず release() で失敗。
+続いてクローズしようとするとアクセス違反。最初の release() 失敗でリソースの解放は成功している様子。
+
+●チェックの省略
+デバイスによってはコンフィギュレーションや代替設定の取得でストールするものもある。決め打ち実装か。
+
+●記述子取得不能
+libusb 0.1 文字列記述子の取得に成功しているように見えて取得できていない。control 転送でも get_string_descriptor
+でも NG。ストールしているとこうなるのか?
+
+●Solaris 動作
+OpenUSB 1.0 を configure すると dbus-1 がないと言われる。linux の場合は dbus-1-devel
+などのパッケージを追加で入れればよい。
+dbus はシンプルなプロセス間メッセージングシステム。
+
+Solaris SUN_LIBUSB_DEBUG
+http://src.opensolaris.org/source/xref/sfw/usr/src/lib/libusb/doc/libusb.txt
+
+●OpenUSB で止まる
+OpenUSB 1.0 を使用すると get_device_data() などで固まる。環境変数 OPENUSB_DEBUG=10 を設定して実行すると、
+デバイスに問い合わせを行って応答が返ってこずにいつまでも待ち続ける様子 (waiting io->complete... で止まっている
+事が多い)。OpenUSB の場合は利用を決定する前に tests プログラムを何度か実行して問題がない事を確認してからの方が
+良い。
+2.6.28-11 generic #42 Ubuntu SMP Fri Apr 17 01:57:59 UTC 2009 i686 GNU/Linux

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	xmlns="http://www.koiroha.org/xmlns/usb4j/usbclassid"
+	targetNamespace="http://www.koiroha.org/xmlns/usb4j/usbclassid"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+	<xsd:element name="usbclassid">
+		<xsd:annotation>
+			<xsd:documentation>usb class-id database.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="vendor" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="class"  minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="lang"   minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="vendor">
+		<xsd:annotation>
+			<xsd:documentation>vendor names for idVendor.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="product" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="id"    type="uint16"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="product">
+		<xsd:annotation>
+			<xsd:documentation>product names for idProduct.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="interface" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="id"    type="uint16"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="interface">
+		<xsd:annotation>
+			<xsd:documentation>interface?.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id"    type="uint8"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="class">
+		<xsd:annotation>
+			<xsd:documentation>usb device or interface class names.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="subclass" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="id"    type="uint8"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="subclass">
+		<xsd:annotation>
+			<xsd:documentation>usb device or interface subclass names.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="protocol" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="id"    type="uint8"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="protocol">
+		<xsd:annotation>
+			<xsd:documentation>usb device or interface protocol names.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id"    type="uint8"     use="required"/>
+			<xsd:attribute name="label" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="lang">
+		<xsd:annotation>
+			<xsd:documentation>
+			names of langid used to retrieve string descriptor. id value is lower 10bit of langid.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="dialect" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="id"     type="uint16"     use="required"/>
+			<xsd:attribute name="label"  type="xsd:string" use="required"/>
+			<xsd:attribute name="locale" type="locale"     use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="dialect">
+		<xsd:annotation>
+			<xsd:documentation>
+			names of dialect of langid. id value is higher 6bit of langid
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id"     type="uint8"      use="required"/>
+			<xsd:attribute name="label"  type="xsd:string" use="required"/>
+			<xsd:attribute name="locale" type="locale"     use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:simpleType name="uint8">
+		<xsd:annotation>
+			<xsd:documentation>8bit unsigned integer displayed by hex.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:hexBinary">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="uint16">
+		<xsd:annotation>
+			<xsd:documentation>16bit unsigned integer displayed by hex.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:hexBinary">
+			<xsd:minLength value="1"/>
+			<xsd:maxLength value="4"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="locale">
+		<xsd:annotation>
+			<xsd:documentation>java Locale style language/country code</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-z]{2}(_[A-Z]{2})?"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>

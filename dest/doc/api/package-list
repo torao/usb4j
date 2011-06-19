@@ -1,0 +1,7 @@
+org.koiroha.usb
+org.koiroha.usb.desc
+org.koiroha.usb.event
+org.koiroha.usb.impl
+org.koiroha.usb.impl.libusb
+org.koiroha.usb.impl.openusb
+org.koiroha.usb.util

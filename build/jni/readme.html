@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>How to build usb4j JNI library</title>
+	<style type="text/css">
+	h2 { font-family: sans-serif; }
+	b { font-weight: normal; font-family: sans-serif; }
+	p { margin-bottom: 4px; }
+	.alt { color: #404040; font-size: smaller; }
+	</style>
+</head>
+<body>
+<div style="text-align:right;font-size:9px;line-height:100%;">$Id: readme.html,v 1.2 2009/05/15 02:41:16 torao Exp $</div>
+<h1>How to build usb4j Linrary</h1>
+<p>
+This directory is to build usb4j JNI library. All modules are written in C/C++ (C99).
+</p>
+<h2>ENVIRONMENT</h2>
+<p>The target compilation environment is follows:</p>
+<div xml:lang="ja" class="alt">ターゲットとしているコンパイル環境は以下の通り:</div>
+<ul>
+<li><b>Windows XP</b>    - Microsoft Visual C++ 9.0 Express + Platform SDK</li>
+<li><b>Mac OS X 10.5</b> - GNU g++ 4.0 (OS bundled compiler)</li>
+<li><b>Linux 2.6</b> - GNU g++ 4.3</li>
+</ul>
+<p>and <code>ant</code> and <code>make</code> (<code>nmake</code>) utilities need.</p>
+<div xml:lang="ja" class="alt">上記に加えて <code>ant</code> 及び <code>make</code>
+(<code>nmake</code>) が必要です。</div>
+
+<h2>BUILD</h2>
+<p>You can build usb4j JNI library using following method.</p>
+<div xml:lang="ja" class="alt">usb4j の JNI ライブラリは以下の手順でビルドすることが出来ます。</div>
+<ol>
+<li>
+	Open terminal.
+	<span xml:lang="ja" class="alt">ターミナルを開きます。</span>
+</li>
+<li>
+	Move to build directory: <code>${project}/build/</code>.
+	<span xml:lang="ja" class="alt">ビルドディレクトリ <code>${project}/build/</code> へ移動します。</span>
+</li>
+<li>
+	Run "<code>ant make.jni.library</code>".
+	<span xml:lang="ja" class="alt">"<code>ant make.jni.library</code>" を実行します。</span>
+</li>
+<li>
+	JNI library will output to the destination directory <code>${project}/dest/lib/${os}</code>.
+	<span xml:lang="ja" class="alt">ライブラリは <code>${project}/dest/lib/${os}</code> へ出力されます。</span>
+</li>
+</ol>
+<p>
+It run "make" program or batch script to build library, so you must setup C++ compilation
+environment in advance.
+</p>
+<div xml:lang="ja" class="alt">
+ライブラリをビルドするために "make" プログラムやバッチスクリプトを実行するため、事前に C++ コンパイル環境を設定しておく
+必要があります。
+</div>
+
+<h2>MACRO</h2>
+<p>
+If you want to erase all tracelog, define <code>__NOTRACE</code> and recompile all modules.
+But it is recommended to control tracelog by Java Logging API instead of rebuild jni library.
+</p>
+<div xml:lang="ja" class="alt">
+全てのトレースログを除去する場合は <code>__NOTRACE</code> マクロを定義して全てのモジュールを再コンパイルしてください。
+ただしログの制御は JNI ライブラリのリビルドより Java の Logging API で制御する方をお勧めします。
+</div>
+<p>
+If you want to analize description of problem, you may <code>__DUMP</code> macro and recompile.
+The library make <code>usb4jdump.log</code> on current directory.
+</p>
+<div xml:lang="ja" class="alt">
+問題の詳細を分析するには <code>__DUMPLOG</code> マクロを定義して全てのモジュールを再コンパイルしてください。
+カレントディレクトリに <code>usb4jdump.log</code> という名前のファイルへ出力を行います。
+</div>
+
+</body>
+</html>
